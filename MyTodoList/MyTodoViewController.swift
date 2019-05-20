@@ -11,9 +11,13 @@ import UIKit
 class MyTodoViewController: UITableViewController {
     
    var  itemArray = ["Mangoes", "Apple", "Bananas"]
+    let defaults = UserDefaults.standard
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
+        if let item = defaults.array(forKey: "TodoListItem") as? [String] {
+            itemArray = item
+        }
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -35,6 +39,30 @@ class MyTodoViewController: UITableViewController {
         tableView.deselectRow(at: indexPath, animated: true)
         
     }
-
+    
+    //Mark :- My Add Items Button
+    
+    @IBAction func addItems(_ sender: UIBarButtonItem) {
+        var textField = UITextField()
+        
+        let alert = UIAlertController(title: "Add Items to MyTodoList", message: "", preferredStyle: .alert)
+        
+        let action = UIAlertAction(title: "Add Items", style: .default) { (action) in
+            self.itemArray.append(textField.text!)
+            
+            self.defaults.set(self.itemArray, forKey: "TodoListItem")
+            
+            self.tableView.reloadData()
+        }
+        
+        alert.addTextField { (alertTextField) in
+            alertTextField.placeholder = "Create New Todo"
+            textField = alertTextField
+        }
+        
+        alert.addAction(action)
+        present(alert, animated: true,completion:nil )
+    }
+    
 }
 
